@@ -1,6 +1,6 @@
 from django.db import models
 
-from core.models import StudentLDAP
+from core.models import StudentModel
 
 
 class Activity(models.Model):
@@ -19,7 +19,7 @@ class Activity(models.Model):
 
 
 class ActivityInscription(models.Model):
-    activity = models.ForeignKey(Activity)
+    activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
     student_first_name = models.CharField(max_length=200)
     student_surname = models.CharField(max_length=200)
     classe = models.CharField(max_length=200)
@@ -34,4 +34,4 @@ class ActivityInscription(models.Model):
     datetime_inscription = models.DateTimeField("Creation date")
     answered = models.BooleanField(default=False)
     payed = models.BooleanField(default=False)
-    student = models.ForeignKey(StudentLDAP, default=None, blank=True, null=True)
+    student = models.ForeignKey(StudentModel, default=None, blank=True, null=True, on_delete=models.SET_NULL)
