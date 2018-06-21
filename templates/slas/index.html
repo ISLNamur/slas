@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+    <head>
+        {% load staticfiles %}
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="{% static 'bootstrap3_10columns/css/bootstrap.min.css' %}">
+        <script src="{% static 'js/jquery.min.js' %}"></script>
+        <script src="{% static 'bootstrap3_10columns/js/bootstrap.min.js' %}"></script>
+        <link href="{% static 'bootstrap3_datetime/css/bootstrap-datetimepicker.min.css' %}" type="text/css" media="all" rel="stylesheet">
+        <script type="text/javascript" src="{% static 'bootstrap3_datetime/js/moment.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'bootstrap3_datetime/js/bootstrap-datetimepicker.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'bootstrap3_datetime/js/locale/fr-be.js' %}"></script>
+        <style>
+            @media (min-width: 800px) {
+                .activite-group.non-free {
+                    min-height: 330px
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="row">
+                <h2>Inscription à une activité de l'After School asbl</h2>
+                <p>Cliquez sur les différents cours pour vous-y inscrire. Le public ciblé se trouve entre parenthèse (Pr pour «primaire» et S pour «secondaire»).</p>
+                <p>Pour toute information complémentaire, veuillez contacter Anne Chalon à l'adresse suivante <a href="mailto:info@slas.be">info@slas.be</a> ou téléphoner au 0497/06 71 39.</p>
+            </div>
+            <div class="row">
+                <h4>Inscrire un élève à une activité :</h4>
+                {% for day in activities %}
+                <div class="col-sm-2">
+                  <h3>{{ day.1.0.day }}</h3>
+                  {% for slot in day %}
+                  <div class="activite-group non-free">
+                    <h4>
+                        {% if slot.0.day != 'Mercredi' and slot.0.day != 'Vendredi' and slot|length > 0 %}
+                            {% if not slot.1.slot %}16h20 à 17h10{% else %}17h10 à 18h00{% endif %}
+                        {% elif slot.0.day == 'Vendredi' %}
+                            {% if not slot.1.slot %}15h20 à 16h10{% else %}16h20 à 17h10{% endif %}
+                        {% else %}
+                            {% if not slot.1.slot %}13h15 à 14h15{% else %}14h20 à 16h10{% endif %}
+                        {% endif %}
+                    </h4>
+                    {% for act in slot %}
+                    <div class="panel panel-warning">
+                      <div class="panel-heading">
+                        <a data-toggle="modal" href="{% url 'slas:inscription' act.pk %}" data-target="#myMod"
+                           data-remote="false" onclick="">
+                          {{ act.name }} ({{ act.age }})
+                        </a>
+                      </div>
+                    </div>
+                    {% endfor %}
+                  </div>
+                  {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    <div class="modal fade" id="myMod" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4></h4>
+                </div>
+                <div class="modal-body">
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $("#myMod").on("show.bs.modal", function(e) {
+            var link = $(e.relatedTarget);
+            $(this).find(".modal-body").load(link.attr("href"));
+        });
+        //changeModelHeader('S\'inscrire à l'activité');
+    </script>
+    </body>
+</html>

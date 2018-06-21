@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmation de la demande d'inscription à SLAS</title>
+</head>
+<body>
+<p>Bonjour,</p>
+<p>Merci d'avoir fait une demande d'inscription pour {{ full_name }} à l'activité {{ activity.name }}
+    {% if not activity.is_free %} le {{ activity.day }}{% endif %}.</p>
+<p>Nous vous recontacterons afin de confirmer l'inscription de votre enfant à l'activité.</p>
+<p>L'équipe d'After School</p>
+</body>
+</html>

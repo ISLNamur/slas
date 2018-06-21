@@ -1,0 +1,148 @@
+<div class="row">
+    {% csrf_token %}
+    {% load crispy_forms_tags %}
+    {% crispy form %}
+</div>
+<script>
+    var activity_id = $('input[name="activity_id"]').val()
+    var lock = false;
+    $('#id_birthdate').datetimepicker({
+        //defaultDate: moment("2005-01-01"),
+        format: 'YYYY-MM-DD',
+        viewMode: 'years',
+        locale: 'fr',
+        sideBySide: false,
+        allowInputToggle: true
+    });
+
+    $('#button-id-next-to-coord_el').click( function () {
+        $('li.tab-pane a:eq(1)').tab('show');
+    });
+    $('#button-id-next-to-coord_resp').click( function () {
+        $('li.tab-pane a:eq(2)').tab('show');
+    });
+    $('#button-id-next-to-confirm').click( function () {
+        $('li.tab-pane a:eq(3)').tab('show');
+    });
+
+    $('#button-id-cancel').click( function () {
+        $('#myMod').modal('hide');
+    });
+
+    $('#id_confirm').change( function() {
+        if (this.checked) {
+          $("#submit-id-submit").removeAttr("disabled");
+        } else {
+          $("#submit-id-submit").attr("disabled", "disabled");
+        }
+      });
+
+    function testEmail(email) {
+        return new RegExp(/^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/).test(email);
+    }
+
+    function checkForm() {
+        $('#fail_exist').hide();
+        $('#fail-list li').hide();
+
+        var isOk = true;
+        if ($('#id_student_surname').val() == "") {
+          isOk = false;
+          $('#fail-1').show();
+        }
+        if ($('#id_student_first_name').val() == "") {
+          isOk = false;
+          $('#fail-2').show();
+        }
+        if ($('#id_classe').val() == "") {
+          isOk = false;
+          $('#fail-3').show();
+        }
+        if ($('#id_birthdate').val() == "") {
+          isOk = false;
+          $('#fail-4').show();
+        }
+        if ($('#id_resp_surname').val() == "") {
+          isOk = false;
+          $('#fail-5').show();
+        }
+        if ($('#id_resp_first_name').val() == "") {
+          isOk = false;
+          $('#fail-6').show();
+        }
+        if ($('#id_address').val() == "") {
+          isOk = false;
+          $('#fail-7').show();
+        }
+        if ($('#id_resp_email').val() == "" || !testEmail($('#id_resp_email').val())) {
+          isOk = false;
+          $('#fail-8').show();
+        }
+        if ($('#id_resp_telephone').val() == "") {
+          isOk = false;
+          $('#fail-9').show();
+        }
+        if ($('#id_resp_telephone_2').val() == "") {
+          isOk = false;
+          $('#fail-10').show();
+        }
+
+        if (!isOk) {
+            $("#fail").fadeIn();
+        } else {
+            $("#fail").fadeOut();
+        }
+
+        return isOk;
+    }
+
+    $("#submit-id-submit").click(function (e) {
+        e.preventDefault();
+        if (lock) return;
+
+        lock = true;
+        $('#success').hide();
+        $('#submit-id-submit').removeAttr('disabled').val("Demande en cours…");
+        var is_form_ok = checkForm();
+        if (is_form_ok) {
+            var surname = $('#id_student_surname').val();
+            var first_name = $('#id_student_first_name').val();
+            $.get("check_student/" + activity_id + "/" + surname + "/" + first_name, function(data) {
+                if (data == "0") {
+                    $("#fail_exist").hide();
+                    $.ajax({
+                        type: 'POST',
+                        url: 'add_student/' + activity_id,
+                        data: $('#inscription-form').serialize(),
+                        tryCount : 0,
+                        retryLimit : 3,
+                        timeout: 3500,
+                        success: function () {
+                            $('#success').fadeIn();
+                            $('#submit-id-submit').removeAttr('disabled').val("Inscrire l'élève");
+                            lock = false;
+                        },
+                        error: function (xhr, textStatus, errorThrown) {
+                            if (textStatus == 'timeout') {
+                                this.tryCount++;
+                                if (this.tryCount <= this.retryLimit) {
+                                    // try again.
+                                    $.ajax(this);
+                                    return;
+                                }
+                            }
+                            $('#submit-id-submit').removeAttr('disabled').val("Désolé, une erreur s'est produite. Réessayer dans quelques instants…");
+                            lock = false;
+                        }
+                    });
+                } else {
+                    $("#fail_exist").fadeIn();
+                    $('#submit-id-submit').removeAttr('disabled').val("Inscrire l'élève");
+                }
+            });
+        } else {
+            $('#submit-id-submit').removeAttr('disabled').val("Inscrire l'élève");
+        }
+        lock = false;
+    });
+</script>

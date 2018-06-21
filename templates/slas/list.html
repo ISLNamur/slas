@@ -1,0 +1,93 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row" style="padding-bottom:5px">
+        <div class="form-inline col-sm-6" >
+                <div class="form-group">
+                    <label for="select-activity" class="control-label ">Activité : </label>
+                        <select id="select-activity" class="form-control">
+                            <option value="-1">Tous</option>
+                            {% for g in activities %}
+                            <optgroup label="{{ g.day }} {{ g.slot.0 }}">
+                                {% for a in g.activities.0 %}
+                                <option value="{{ a.id }}" {% if request.GET.activity == a.id|stringformat:"i" %}selected{% endif %}>{{ a.name }}</option>
+                                {% endfor %}
+                            </optgroup>
+                            <optgroup label="{{ g.day }} {{ g.slot.1 }}">
+                                {% for a in g.activities.1 %}
+                                <option value="{{ a.id }}" {% if request.GET.activity == a.id|stringformat:"i" %}selected{% endif %}>{{ a.name }}</option>
+                                {% endfor %}
+                            </optgroup>
+                            {% endfor %}
+                        </select>
+                </div>
+        </div>
+        <div class="col-sm-4">
+            <a class="btn btn-default" href="{% url 'slas:data' %}" role="button">Exporter vers un fichier excel</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">Inscriptions aux activités SLAS</div>
+                <ul class="list-group">
+                    {% for i in inscriptions %}
+                    <li class="list-group-item">
+                        <strong>{{ i.activity.name }}</strong>
+                            {% if i.activity.day == 'mecredi' %}
+                                {% if i.activity.slot == 0 %}(13h15 à 14h15{% else %}(14h20 à 16h10{% endif %}
+                            {% elif i.activity.day == 'vendredi' %}
+                                {% if i.activity.slot == 0 %}(15h20 à 16h10{% else %}(16h20 à 17h10{% endif %}
+                            {% else %}
+                                {% if i.activity.slot == 0 %}(16h20 à 17h10{% else %}(17h10 à 18h00{% endif %}
+                            {% endif %}
+                         {{ i.activity.day }}) :
+                        {{ i.student_first_name }} {{ i.student_surname }} ({{ i.classe }}), née le {{ i.birth }}.
+                        <a class="btn btn-default btn-xs pull-right" href="#suite{{ i.pk }}" data-toggle="collapse">Info responsable</a>
+                        <div class="pull-right" style="margin-right:10px">
+                            <label class="checkbox-inline">
+                                <input class="answered" type="checkbox" id="answered-{{ i.pk }}" value="{{ i.pk }}"
+                                       {% if i.answered %}checked{% endif %}
+                                autocomplete=off> Répondu
+                            </label>
+                            <label class="checkbox-inline">
+                                <input class="payed" type="checkbox" id="payed-{{ i.pk }}" value="{{ i.pk }}"
+                                       {% if i.payed %}checked{% endif %}
+                                autocomplete=off> Payé
+                            </label>
+                        </div>
+                        <div class="collapse" id="suite{{ i.pk }}">
+                            <dl class="dl-horizontal">
+                                <dt>Responsable :</dt><dd>{{ i.resp_first_name }} {{ i.resp_surname }}</dd>
+                                <dt>Adresse :</dt><dd>{{ i.resp_address }}</dd>
+                                <dt>Email(s)</dt><dd>{{ i.resp_email }}{% if i.resp_email_2 %} et {{ i.resp_email_2 }}{% endif %}</dd>
+                                <dt>Téléphones :</dt><dd>{{ i.resp_telephone }} et {{ i.resp_telephone_2 }}</dd>
+                            </dl>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $("#select-activity").change(function () {
+        activity = $(this).find(':selected').attr('value');
+        location.href = "{% url 'slas:list' %}?activity=" + activity;
+        });
+
+    $(".payed").change(function () {
+        var id = $(this).val();
+        var checked = $(this).is(":checked") ? 1 : 0;
+        $.get("{% url 'slas:payed_clean' %}/" + id + "/" + checked);
+    });
+    $(".answered").change(function () {
+        var id = $(this).val();
+        var checked = $(this).is(":checked") ? 1 : 0;
+        $.get("{% url 'slas:answered_clean' %}/" + id + "/" + checked);
+    });
+
+</script>
+{% endblock content %}
