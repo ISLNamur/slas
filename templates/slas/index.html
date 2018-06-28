@@ -37,9 +37,9 @@
                         {% if slot.0.day != 'Mercredi' and slot.0.day != 'Vendredi' and slot|length > 0 %}
                             {% if not slot.1.slot %}16h20 à 17h10{% else %}17h10 à 18h00{% endif %}
                         {% elif slot.0.day == 'Vendredi' %}
-                            {% if not slot.1.slot %}15h20 à 16h10{% else %}16h20 à 17h10{% endif %}
+                            {% if not slot.0.slot %}15h20 à 16h10{% else %}16h20 à 17h10{% endif %}
                         {% else %}
-                            {% if not slot.1.slot %}13h15 à 14h15{% else %}14h20 à 16h10{% endif %}
+                            {% if slot.0.slot %}14h10 à 16h10{% endif %}
                         {% endif %}
                     </h4>
                     {% for act in slot %}
