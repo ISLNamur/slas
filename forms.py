@@ -32,7 +32,7 @@ class InscriptionForm(forms.Form):
     )
 
     family = forms.CharField(
-        label="Autre frères ou sœurs inscrits à un atelier (nom et prénom)",
+        label="Autre(s) frère(s) ou sœur(s) inscrit(s) à un atelier (noms et prénoms)",
         max_length=200,
         required=False,
     )
@@ -167,7 +167,7 @@ class InscriptionForm(forms.Form):
                             style="display:none;margin-top:15px"
                             ),
                         Div(
-                            HTML("La demande a bien été envoyé. Merci ! Un email vous a été envoyé."),
+                            HTML("La demande a bien été envoyé. Merci ! Un email vous a été envoyé. Si vous n'avez reçu aucun email, merci de bien vérifiez vos courriers indésirables."),
                             css_class="alert alert-success",
                             css_id="success",
                             role="alert",
