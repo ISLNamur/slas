@@ -23,34 +23,59 @@
         <div class="container">
             <div class="row">
                 <h2>Inscription à une activité de l'After School asbl</h2>
-                <p>Cliquez sur les différents cours pour vous-y inscrire. Le public ciblé se trouve entre parenthèse (Pr pour «primaire» et S pour «secondaire»).</p>
+                <p>Cliquez sur les différents cours pour vous-y inscrire. Le public ciblé se trouve entre parenthèse (Pr pour «primaire» et Sec pour «secondaire»).</p>
                 <p>Pour toute information complémentaire, veuillez contacter Anne Chalon à l'adresse suivante <a href="mailto:info@slas.be">info@slas.be</a> ou téléphoner au 0497/06 71 39.</p>
             </div>
-            <div class="row">
+            <div class="row" style="text-align: center;">
                 <h4>Inscrire un élève à une activité :</h4>
                 {% for day in activities %}
                 <div class="col-sm-2">
-                  <h3>{{ day.1.0.day }}</h3>
+                  <h3>{{ day.0.0.day }}</h3>
                   {% for slot in day %}
                   <div class="activite-group non-free">
                     <h4>
                         {% if slot.0.day != 'Mercredi' and slot.0.day != 'Vendredi' and slot|length > 0 %}
-                            {% if not slot.1.slot %}16h20 à 17h10{% else %}17h10 à 18h00{% endif %}
+                            {% if not slot.0.slot %}16h20 à 17h10{% else %}17h10 à 18h00{% endif %}
                         {% elif slot.0.day == 'Vendredi' %}
                             {% if not slot.0.slot %}15h20 à 16h10{% else %}16h20 à 17h10{% endif %}
                         {% else %}
-                            {% if slot.0.slot %}14h10 à 16h10{% endif %}
+                            
                         {% endif %}
                     </h4>
                     {% for act in slot %}
-                    <div class="panel panel-warning">
-                      <div class="panel-heading">
-                        <a data-toggle="modal" href="{% url 'slas:inscription' act.pk %}" data-target="#myMod"
-                           data-remote="false" onclick="">
-                          {{ act.name }} ({{ act.age }})
-                        </a>
-                      </div>
+                    {% if act.day == 'Mercredi' %}
+                    <div style="font-weight:bold;">
+                        <p>12h40 - 13h10 : Repas</p>
+                        <p>13h10 - 14h10 : étude/lecture/jeux société</p>
+                    </div> 
+                    {% endif %}
+                    {% if act.day == 'Mercredi' %}
+                    <div class="row">
+                        <div class="col-xs-7" style="padding-right:5px">
+                        {% endif %}
+                            <div class="panel panel-warning">
+                                <div class="panel-heading">
+                                    {% if act.day == 'Mercredi' %}<strong>14h20 à 16h10</strong><br />{% endif %}
+                                    <a data-toggle="modal" href="{% url 'slas:inscription' act.pk %}" data-target="#myMod"
+                                    data-remote="false" onclick="">
+                                    {{ act.name }} ({{ act.age }})
+                                    </a>
+                                </div>
+                            </div>
+                        {% if act.day == 'Mercredi' %}
+                        </div>
+                        <div class="col-xs-3" style="font-weight:bold;padding-left:0px;padding-right:5px">
+                            <p style="margin-top:15px;">Garderie 1 période > 15h10</p>
+                            <p style="margin-top:15px;">Garderie 1 période > 16h10</p>
+                        </div>
                     </div>
+                    {% endif %}
+                    {% if act.day == 'Mercredi' %}
+                    <div style="font-weight:bold;">
+                        <p>Garderie 1 période jusqu’à 17h</p>
+                        <p>Garderie 1 période jusqu’à 18h</p>
+                    </div> 
+                    {% endif %}
                     {% endfor %}
                   </div>
                   {% endfor %}

@@ -4,6 +4,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Div, Field, Hidden, HTML, Button
 from crispy_forms.bootstrap import FormActions, Tab, TabHolder, Alert
 
+from .models import PAYEMENT_CHOICES
 
 class InscriptionForm(forms.Form):
     student_surname = forms.CharField(
@@ -19,7 +20,7 @@ class InscriptionForm(forms.Form):
     )
 
     classe = forms.CharField(
-        label='Classe (2017-2018) :',
+        label='Classe (2018-2019) :',
         max_length=200,
         required=True
     )
@@ -28,6 +29,12 @@ class InscriptionForm(forms.Form):
         label='Date de naissance :',
         max_length=200,
         required=True
+    )
+
+    family = forms.CharField(
+        label="Autre frères ou sœurs inscrits à un atelier (nom et prénom)",
+        max_length=200,
+        required=False,
     )
 
     resp_surname = forms.CharField(
@@ -70,6 +77,12 @@ class InscriptionForm(forms.Form):
         required=True,
     )
 
+    resp_payement = forms.ChoiceField(
+        label="Fréquence de paiement",
+        choices=PAYEMENT_CHOICES,
+        widget=forms.RadioSelect,
+    )
+
     confirm = forms.BooleanField(
         label="J'inscris mon enfant à cette activité et confirme avoir pris connaissance des dispositions pratiques.",
         required=True,
@@ -100,6 +113,7 @@ class InscriptionForm(forms.Form):
                     Field('student_first_name'),
                     Field('classe'),
                     Field('birthdate'),
+                    Field('family'),
                     Button("next-to-coord_resp", "Suivant"),
                     css_id="eleve_tab",
                     ),
@@ -116,6 +130,7 @@ class InscriptionForm(forms.Form):
                     ),
                 Tab("Confirmation",
                     Div(
+                        Field('resp_payement'),
                         Field("confirm"),
                         FormActions(
                             Submit('submit', 'Soumettre', disabled='true'),
@@ -164,12 +179,7 @@ class InscriptionForm(forms.Form):
             )
         )
         if not self.is_free:
-            self.helper.layout[1][3][0].insert(1, Div(HTML("L'inscription est effective après paiement de la moitié de "
-                                                           "la somme due sur le compte : <strong>BE89 0689 0585 0085 de"
-                                                           " Saint-Louis After School Asbl, rue Pepin, 7 - 5000 Namur."
-                                                           "</strong> L'autre moitié devra être payée pour le 15"
-                                                           " janvier. L'arrivée des paiements sur le compte détermine la"
-                                                           " priorité en cas de groupe complet."),
+            self.helper.layout[1][3][0].insert(1, Div(HTML("Merci d'attendre la réception de la facture avant de payer."),
                                                       css_class="alert alert-danger"))
         if self.is_full:
             self.helper.layout[1].pop(3)

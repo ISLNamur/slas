@@ -33,8 +33,7 @@ def index(request):
 
     mercredi_0 = Activity.objects.all().filter(day='Mercredi', slot=False)
     mercredi_1 = Activity.objects.all().filter(day='Mercredi', slot=True)
-    mercredi = [mercredi_0, mercredi_1
-                ]
+    mercredi = [mercredi_0, mercredi_1]
     jeudi_0 = Activity.objects.all().filter(day='Jeudi', slot=False)
     jeudi_1 = Activity.objects.all().filter(day='Jeudi', slot=True)
     jeudi = [jeudi_0, jeudi_1]
@@ -54,7 +53,7 @@ def index(request):
 def inscription(request, activity_id):
     activity = Activity.objects.get(id=activity_id)
     form = InscriptionForm(description=activity.description, activity_id=activity_id, is_free=activity.is_free,
-                           is_full=activity.is_full)
+                           is_full=activity.is_full, initial={'resp_payement': "1x"})
     return render(request, 'slas/inscription.html', context={'form': form})
 
 
@@ -79,6 +78,7 @@ def add_student(request, activity_id):
                             student_surname=form.cleaned_data['student_surname'],
                             classe=form.cleaned_data['classe'],
                             birth=form.cleaned_data['birthdate'],
+                            family=form.cleaned_data['family'],
                             resp_first_name=form.cleaned_data['resp_first_name'],
                             resp_surname=form.cleaned_data['resp_surname'],
                             resp_address=form.cleaned_data['address'],
@@ -86,6 +86,7 @@ def add_student(request, activity_id):
                             resp_email_2=form.cleaned_data['resp_email_2'],
                             resp_telephone=clean_tel(form.cleaned_data['resp_telephone']),
                             resp_telephone_2=clean_tel(form.cleaned_data['resp_telephone_2']),
+                            resp_payement=form.cleaned_data['resp_payement'],
                             datetime_inscription=timezone.now(),
                             ).save()
 
@@ -95,7 +96,8 @@ def add_student(request, activity_id):
                    }
         email.send_email(to=[form.cleaned_data['resp_email']], subject="Confirmation de la demande d'inscription à SLAS",
                          email_template="slas/email_confirm.html", context=context)
-
+    else:
+        return HttpResponse(form.errors, status=400)
     return HttpResponse('done')
 
 
