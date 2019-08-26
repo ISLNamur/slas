@@ -17,7 +17,7 @@ users_with_access = ['chalan']
 
 days_to_hours = {'Lundi': ['16h20 à 17h10', '17h10 à 18h00'],
                  'Mardi': ['16h20 à 17h10', '17h10 à 18h00'],
-                 'Mercredi': ['13h15 à 14h15', '14h20 à 16h10'],
+                 'Mercredi': ['14h20 à 16h10', ''],
                  'Jeudi': ['16h20 à 17h10', '17h10 à 18h00'],
                  'Vendredi': ['15h20 à 16h10', '16h20 à 17h10'],}
 
@@ -115,7 +115,7 @@ def list_inscriptions(request):
 
     mercredi_0 = Activity.objects.all().filter(day='Mercredi', slot=False)
     mercredi_1 = Activity.objects.all().filter(day='Mercredi', slot=True)
-    mercredi = {'day': 'Mercredi', 'activities': [mercredi_0, mercredi_1], 'slot': ['13h15 à 14h15', '14h20 à 16h10']}
+    mercredi = {'day': 'Mercredi', 'activities': [mercredi_0, mercredi_1], 'slot': ['14h20 à 16h10', '']}
 
     jeudi_0 = Activity.objects.all().filter(day='Jeudi', slot=False)
     jeudi_1 = Activity.objects.all().filter(day='Jeudi', slot=True)
@@ -148,7 +148,7 @@ def get_excel_data(request):
 
     columns = ('Prénom élève', 'Nom élève', 'Classe', 'Activité', 'Date de naissance',
                'Prénom responsable', 'Nom responsable', 'Adresse', 'Email 1', 'Email 2', 'Téléphone 1', 'Téléphone 2',
-               'Répondu', 'Payé')
+               'Famille', 'Paiement', 'Répondu', 'Payé')
     for i, c in enumerate(columns):
         feuille.write(0, i, c)
 
@@ -166,8 +166,10 @@ def get_excel_data(request):
         feuille.write(i + 1, 9, insc.resp_email_2)
         feuille.write(i + 1, 10, insc.resp_telephone)
         feuille.write(i + 1, 11, insc.resp_telephone_2)
-        feuille.write(i + 1, 12, insc.answered)
-        feuille.write(i + 1, 13, insc.payed)
+        feuille.write(i + 1, 12, insc.family)
+        feuille.write(i + 1, 13, insc.resp_payement)
+        feuille.write(i + 1, 14, insc.answered)
+        feuille.write(i + 1, 15, insc.payed)
 
     response = HttpResponse(content_type='application/vnd.ms-excel')
     response['Content-Disposition'] = 'attachment; filename="slas_data.xls"'

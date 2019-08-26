@@ -33,18 +33,18 @@
                 <div class="panel-heading">Inscriptions aux activités SLAS</div>
                 <ul class="list-group">
                     {% for i in inscriptions %}
-                    <li class="list-group-item">
+                    <li class="list-group-item" style="padding-bottom: 30px">
                         <strong>{{ i.activity.name }}</strong>
-                            {% if i.activity.day == 'mecredi' %}
-                                {% if i.activity.slot == 0 %}(13h15 à 14h15{% else %}(14h20 à 16h10{% endif %}
+                            {% if i.activity.day == 'Mercredi' %}
+                                (14h20 à 16h10)
                             {% elif i.activity.day == 'vendredi' %}
                                 {% if i.activity.slot == 0 %}(15h20 à 16h10{% else %}(16h20 à 17h10{% endif %}
                             {% else %}
                                 {% if i.activity.slot == 0 %}(16h20 à 17h10{% else %}(17h10 à 18h00{% endif %}
                             {% endif %}
                          {{ i.activity.day }}) :
-                        {{ i.student_first_name }} {{ i.student_surname }} ({{ i.classe }}), née le {{ i.birth }}.
-                        <a class="btn btn-default btn-xs pull-right" href="#suite{{ i.pk }}" data-toggle="collapse">Info responsable</a>
+                        {{ i.student_first_name }} {{ i.student_surname }} ({{ i.classe }}).
+                        <a class="btn btn-default btn-xs pull-right" href="#suite{{ i.pk }}" data-toggle="collapse">+Info</a>
                         <div class="pull-right" style="margin-right:10px">
                             <label class="checkbox-inline">
                                 <input class="answered" type="checkbox" id="answered-{{ i.pk }}" value="{{ i.pk }}"
@@ -59,6 +59,9 @@
                         </div>
                         <div class="collapse" id="suite{{ i.pk }}">
                             <dl class="dl-horizontal">
+                                <dt>Née le :</dt><dd>{{ i.birth }}</dd>
+                                <dt>Famille :</dt><dd>{{ i.family }}</dd>
+                                <dt>Paiement :</dt><dd>{{ i.resp_payement }}</dd>
                                 <dt>Responsable :</dt><dd>{{ i.resp_first_name }} {{ i.resp_surname }}</dd>
                                 <dt>Adresse :</dt><dd>{{ i.resp_address }}</dd>
                                 <dt>Email(s)</dt><dd>{{ i.resp_email }}{% if i.resp_email_2 %} et {{ i.resp_email_2 }}{% endif %}</dd>
