@@ -56,10 +56,10 @@
                             <div class="panel panel-warning">
                                 <div class="panel-heading">
                                     {% if act.day == 'Mercredi' %}<strong>14h20 à 16h10</strong><br />{% endif %}
-                                    <a data-toggle="modal" href="{% url 'slas:inscription' act.pk %}" data-target="#myMod"
-                                    data-remote="false" onclick="">
+                                    {% if not act.is_disabled %}<a data-toggle="modal" href="{% url 'slas:inscription' act.pk %}" data-target="#myMod"
+                                    data-remote="false" onclick="">{% endif %}
                                     {{ act.name }} ({{ act.age }})
-                                    </a>
+                                    {% if not act.is_disabled %}</a>{% endif %}
                                 </div>
                             </div>
                         {% if act.day == 'Mercredi' %}

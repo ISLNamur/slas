@@ -13,7 +13,7 @@ from .models import Activity, ActivityInscription
 from .forms import InscriptionForm
 
 groups_with_access = ['sysadmin', 'direction']
-users_with_access = ['chalan']
+users_with_access = ['chalan', 'slas']
 
 days_to_hours = {'Lundi': ['16h20 à 17h10', '17h10 à 18h00'],
                  'Mardi': ['16h20 à 17h10', '17h10 à 18h00'],
