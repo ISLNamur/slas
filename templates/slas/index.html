@@ -43,6 +43,7 @@
                         {% endif %}
                     </h4>
                     {% for act in slot %}
+                    {% if not act.is_hidden %}
                     {% if act.day == 'Mercredi' %}
                     <div style="font-weight:bold;">
                         <p>12h40 - 13h10 : Repas</p>
@@ -75,6 +76,7 @@
                         <p>Garderie 1 période jusqu’à 17h</p>
                         <p>Garderie 1 période jusqu’à 18h</p>
                     </div> 
+                    {% endif %}
                     {% endif %}
                     {% endfor %}
                   </div>

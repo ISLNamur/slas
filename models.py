@@ -14,6 +14,7 @@ class Activity(models.Model):
     place = models.CharField(max_length=200, blank=True)
     is_full = models.BooleanField(default=False)
     is_disabled = models.BooleanField(default=False)
+    is_hidden = models.BooleanField(default=False)
 
     def __str__(self):
         return "%s | %s [%i]" % (self.name, self.day, int(self.slot))
