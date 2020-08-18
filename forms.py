@@ -20,7 +20,7 @@ class InscriptionForm(forms.Form):
     )
 
     classe = forms.CharField(
-        label='Classe (2018-2019) :',
+        label='Classe (2020-2021) :',
         max_length=200,
         required=True
     )
